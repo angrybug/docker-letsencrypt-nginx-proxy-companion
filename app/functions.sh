@@ -151,15 +151,15 @@ function docker_api {
     if [[ -n "${3:-}" ]]; then
         curl_opts+=(-d "$3")
     fi
-    if [[ -z "$DOCKER_HOST" ]];then
-        echo "Error DOCKER_HOST variable not set" >&2
+    if [[ -z "$PROXY_DOCKER_HOST" ]];then
+        echo "Error PROXY_DOCKER_HOST variable not set" >&2
         return 1
     fi
-    if [[ $DOCKER_HOST == unix://* ]]; then
-        curl_opts+=(--unix-socket ${DOCKER_HOST#unix://})
+    if [[ $PROXY_DOCKER_HOST == unix://* ]]; then
+        curl_opts+=(--unix-socket ${PROXY_DOCKER_HOST#unix://})
         scheme='http://localhost'
     else
-        scheme="http://${DOCKER_HOST#*://}"
+        scheme="http://${PROXY_DOCKER_HOST#*://}"
     fi
     [[ $method = "POST" ]] && curl_opts+=(-H 'Content-Type: application/json')
     curl "${curl_opts[@]}" -X${method} ${scheme}$1
